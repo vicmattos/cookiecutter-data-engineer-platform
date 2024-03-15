@@ -14,3 +14,32 @@ services:
     healthcheck:
       test: ["CMD", "mc", "ready", "local"]
     command: server /data
+
+  metastore:
+    image: naushadh/hive-metastore
+    depends_on:
+      metastore-db:
+        condition: service_healthy
+      obj-store:
+        condition: service_healthy
+    environment:
+      - DATABASE_HOST=metastore-db
+      - DATABASE_DB=${POSTGRES_DB}
+      - DATABASE_USER=${POSTGRES_USER}
+      - DATABASE_PASSWORD=${POSTGRES_PASSWORD}
+      - AWS_ACCESS_KEY_ID=${MINIO_ROOT_USER}
+      - AWS_SECRET_ACCESS_KEY=${MINIO_ROOT_PASSWORD}
+      - S3_ENDPOINT_URL=http://obj-store${MINIO_ADDRESS}
+      - S3_BUCKET=${S3_LAKE_BUCKET}
+      - S3_PREFIX=${S3_LAKE_PREFIX}
+    ports:
+      - 9083:9083
+
+  metastore-db:
+    image: postgres:14.11-alpine3.19
+    env_file:
+      - .env
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: ["CMD", "psql", "-U", "${POSTGRES_USER}", "${POSTGRES_DB}"]
