@@ -1,0 +1,33 @@
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+    -   id: trailing-whitespace
+    -   id: end-of-file-fixer
+    -   id: check-toml
+        exclude: "{{cookiecutter.project_directory}}"
+    -   id: check-yaml
+        exclude: "{{cookiecutter.project_directory}}"
+    -   id: check-added-large-files
+    -   id: debug-statements
+        exclude: "{{cookiecutter.project_directory}}"
+
+-   repo: https://github.com/python-jsonschema/check-jsonschema
+    rev: 0.27.3
+    hooks:
+    -   id: check-dependabot
+    -   id: check-github-workflows
+
+-   repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.7
+    hooks:
+    -   id: ruff # linter
+        args: [ --fix ]
+        exclude: "{{cookiecutter.project_directory}}"
+    -   id: ruff-format
+        exclude: "{{cookiecutter.project_directory}}"
+
+-   repo: https://github.com/commitizen-tools/commitizen
+    rev: v3.13.0
+    hooks:
+    -   id: commitizen

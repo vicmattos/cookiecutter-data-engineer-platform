@@ -1,0 +1,80 @@
+## --------------------------------------------------
+## RUFF
+## --------------------------------------------------
+[tool.ruff]
+fix = true
+line-length = 88
+exclude = [
+    ".git",
+    ".eggs",
+    ".mypy_cache",
+    ".ruff_cache",
+    ".pytest_cache",
+    "__pypackages__",
+    ".venv",
+]
+
+[tool.ruff.format]
+quote-style = "single"
+
+[tool.ruff.lint.isort]
+force-single-line = true
+
+
+## --------------------------------------------------
+## PYTEST
+## --------------------------------------------------
+[tool.pytest.ini_options]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')"
+]
+
+addopts = "--ignore={{cookiecutter.project_directory}}"
+
+
+## --------------------------------------------------
+## COMMITIZEN
+## --------------------------------------------------
+[tool.commitizen]
+name = "cz_customize"
+tag_format = "$version"
+version_scheme = "semver"
+version_provider = "scm"
+
+[tool.commitizen.customize]
+message_template = "{{change_type}}({{scope}}): {{message}}"
+example = "ci(dev): add commitizen to automate commit message build"
+schema = "<type>(<scope>): <body>"
+schema_pattern = "^(feat|fix|refactor|docs|perf|style|test|build|ci|chore|revert){1}(\\([\\w\\-\\.]+\\))?(!)?: ([\\w ])+([\\s\\S]*)"
+
+[[tool.commitizen.customize.questions]]
+type = "list"
+name = "change_type"
+message = "Select the type of change you are committing"
+choices = [
+    {value = "feat", name = "feat: A new feature. Correlates with MINOR in SemVer"},
+    {value = "fix", name = "fix: A bug fix. Correlates with PATCH in SemVer"},
+    {value = "refactor", name = "refactor: A code change that neither fixes a bug nor adds a feature"},
+    {value = "docs", name = "docs: Documentation only changes"},
+    {value = "perf", name = "perf: A code change that improves performance"},
+    {value = "style", name = "style: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)"},
+    {value = "test", name = "test: Adding missing or correcting existing tests"},
+    {value = "build", name = "build: Changes that affect the build system or external dependencies (cookiecutter, pip, docker, etc)"},
+    {value = "ci", name = "ci: Changes to CI configuration files and scripts (github actions, pre-commit, make, etc)"},
+    {value = "chore", name = "chore: Changes to project configuration (.editorconfig, pyproject.toml, .gitignore, etc)"},
+    {value = "revert", name = "revert: Undo changes made in previous commits"},
+]
+
+[[tool.commitizen.customize.questions]]
+type = "list"
+name = "scope"
+message = "What is the scope of this change?"
+choices = [
+    {value = "dev", name = "dev: Changes made outside template directory"},
+    {value = "template", name = "template: Changes made either in cookiecutter.json or inside template directory"},
+]
+
+[[tool.commitizen.customize.questions]]
+type = "input"
+name = "message"
+message = "Write a short and imperative summary of the code changes: (lower case and no period)\n"

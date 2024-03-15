@@ -1,0 +1,6 @@
+site_name: Data Engineering Platform Cookiecutter
+theme:
+  name: material
+
+copyright: |
+  &copy; 2024 <a href="https://github.com/vicmattos"  target="_blank" rel="noopener">Victor Mattos</a>
