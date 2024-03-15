@@ -1,4 +1,4 @@
-cookiecutter==2.5.0
+cookiecutter==2.6.0
 pytest==7.4.3
 pytest-xdist==3.5.0
 pytest-cookies==0.7.0
