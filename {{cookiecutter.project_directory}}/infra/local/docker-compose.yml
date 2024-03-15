@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+
+  obj-store:
+    image: minio/minio:RELEASE.2024-03-15T01-07-19Z
+    env_file:
+      - .env
+    ports:
+      - 9000:9000  # .env MINIO_ADDRESS
+      - 9001:9001  # .env MINIO_CONSOLE_ADDRESS
+    volumes:
+      - ./data/minio:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+    command: server /data
