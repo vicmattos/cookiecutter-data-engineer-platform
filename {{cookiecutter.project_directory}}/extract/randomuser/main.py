@@ -1,8 +1,11 @@
 from dataclasses import dataclass
+import os
 from pathlib import Path
 import tempfile
 import time
 
+import boto3
+from dotenv import load_dotenv
 import jsonlines
 from randomuser import RandomUser
 
@@ -54,3 +57,36 @@ def _clean_obj_prefix(obj_prefix: Path) -> Path:
 def create_file(file_path: Path, users: list[dict[str,str]]) -> None:
     with jsonlines.open(file_path, mode='w') as writer:
         writer.write_all(users)
+
+
+if __name__ == "__main__":
+    load_dotenv()
+
+    ENDPOINT_URL = os.getenv("ENDPOINT_URL")
+    ACCESS_KEY = os.getenv("ACCESS_KEY")
+    SECRET_KEY = os.getenv("SECRET_KEY")
+    APP_USERS_QTD = int(os.getenv("APP_USERS_QTD", 10))
+    APP_BUCKET_NAME = os.getenv("APP_BUCKET_NAME")
+    APP_OBJ_PREFIX = Path(os.getenv("APP_OBJ_PREFIX"))
+
+    if ENDPOINT_URL:
+        client = boto3.client('s3',
+            endpoint_url=ENDPOINT_URL,
+            aws_access_key_id=ACCESS_KEY,
+            aws_secret_access_key=SECRET_KEY,
+        )
+    elif ACCESS_KEY and SECRET_KEY:
+        client = boto3.client('s3',
+            aws_access_key_id=ACCESS_KEY,
+            aws_secret_access_key=SECRET_KEY,
+        )
+    else:
+        client = boto3.client('s3')
+
+    args = Args(
+        user_qtd = APP_USERS_QTD,
+        bucket_name = APP_BUCKET_NAME,
+        obj_prefix = APP_OBJ_PREFIX,
+    )
+
+    print(main(client, args))
