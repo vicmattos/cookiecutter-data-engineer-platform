@@ -1,62 +1,62 @@
 from dataclasses import dataclass
+import json
 import os
 from pathlib import Path
-import tempfile
 import time
+from typing import Iterator
+from typing import TypeVar
 
-import boto3
+import s3fs
 from dotenv import load_dotenv
-import jsonlines
 from randomuser import RandomUser
 
 
+UserGen = TypeVar("UserGen", bound=Iterator[dict[str, str]])
+S3File = TypeVar("S3File", bound=s3fs.core.S3FileSystem)
+
+
 @dataclass
-class Args:
+class MainArgs:
+    s3: S3File
     user_qty: int
     bucket_name: str
     obj_prefix: Path
 
-def main(s3_client, args: Args) -> str:
+    def __post_init__(self):
+        if "/" in self.obj_prefix.parts:
+            self.obj_prefix = Path(*self.obj_prefix.parts[1:])
+
+
+def main(args: MainArgs) -> str:
     # Clean args
     args.obj_prefix = _clean_obj_prefix(args.obj_prefix)
     # Create Constants
-    FILE_NAME: str = f'{int(time.time())}_users.jsonl'
-    TEMP_FILE: Path = Path(tempfile.mkdtemp(), FILE_NAME)
-    S3_OBJ_KEY: Path = Path(args.obj_prefix, FILE_NAME)
-    # Create local file with random users
-    users = generate_users(args.user_qty)
-    create_file(TEMP_FILE, users)
-    # Upload file to object store
-    s3_client.upload_file(
-        Filename=TEMP_FILE,
-        Bucket=args.bucket_name,
-        Key=str(S3_OBJ_KEY),
-    )
+    FILE_NAME: str = f"{int(time.time())}_users.jsonl"
+    S3_OBJ_URI: Path = Path(args.bucket_name, args.obj_prefix, FILE_NAME)
+    # Create random users generator
+    user_generator = generate_users(args.user_qty)
+    # Upload data to object store
+    upload_users(args.s3, S3_OBJ_URI, user_generator)
     # Return object S3 URI
-    obj_uri = Path(args.bucket_name, S3_OBJ_KEY)
-    return 's3://' + str(obj_uri)
+    return "s3://" + str(S3_OBJ_URI)
 
 
-def generate_users(qty: int) -> list[dict[str,str]]:
-    users = []
+def generate_users(qty: int) -> UserGen:
     for ru in RandomUser.generate_users(qty):
-        users.append({
+        yield {
             "full_name": ru.get_full_name(),
             "date_of_birth": ru.get_dob(),
             "email": ru.get_email(),
-        })
-    return users
+        }
 
 
-def _clean_obj_prefix(obj_prefix: Path) -> Path:
-    if '/' in obj_prefix.parts:
-        return Path(*obj_prefix.parts[1:])
-    return obj_prefix
-
-
-def create_file(file_path: Path, users: list[dict[str,str]]) -> None:
-    with jsonlines.open(file_path, mode='w') as writer:
-        writer.write_all(users)
+def upload_users(s3: S3File, key: str, users: UserGen, encode: str = "utf-8") -> None:
+    with s3.open(key, "wb") as f:
+        for user in users:
+            ustring = json.dumps(user)
+            ubytes = bytes(ustring, encode)
+            f.write(ubytes)
+            f.write(b"\n")
 
 
 if __name__ == "__main__":
@@ -70,23 +70,24 @@ if __name__ == "__main__":
     APP_OBJ_PREFIX = Path(os.getenv("APP_OBJ_PREFIX"))
 
     if ENDPOINT_URL:
-        client = boto3.client('s3',
+        client = s3fs.S3FileSystem(
+            key=ACCESS_KEY,
+            secret=SECRET_KEY,
             endpoint_url=ENDPOINT_URL,
-            aws_access_key_id=ACCESS_KEY,
-            aws_secret_access_key=SECRET_KEY,
         )
     elif ACCESS_KEY and SECRET_KEY:
-        client = boto3.client('s3',
-            aws_access_key_id=ACCESS_KEY,
-            aws_secret_access_key=SECRET_KEY,
+        client = s3fs.S3FileSystem(
+            key=ACCESS_KEY,
+            secret=SECRET_KEY,
         )
     else:
-        client = boto3.client('s3')
+        s3fs.S3FileSystem(anon=False)
 
-    args = Args(
-        user_qty = APP_USERS_QTY,
-        bucket_name = APP_BUCKET_NAME,
-        obj_prefix = APP_OBJ_PREFIX,
+    args = MainArgs(
+        s3=client,
+        user_qty=APP_USERS_QTY,
+        bucket_name=APP_BUCKET_NAME,
+        obj_prefix=APP_OBJ_PREFIX,
     )
 
-    print(main(client, args))
+    print(main(args))
