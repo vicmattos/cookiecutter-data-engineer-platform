@@ -12,7 +12,7 @@ from randomuser import RandomUser
 
 @dataclass
 class Args:
-    user_qtd: int
+    user_qty: int
     bucket_name: str
     obj_prefix: Path
 
@@ -24,7 +24,7 @@ def main(s3_client, args: Args) -> str:
     TEMP_FILE: Path = Path(tempfile.mkdtemp(), FILE_NAME)
     S3_OBJ_KEY: Path = Path(args.obj_prefix, FILE_NAME)
     # Create local file with random users
-    users = generate_users(args.user_qtd)
+    users = generate_users(args.user_qty)
     create_file(TEMP_FILE, users)
     # Upload file to object store
     s3_client.upload_file(
@@ -37,9 +37,9 @@ def main(s3_client, args: Args) -> str:
     return 's3://' + str(obj_uri)
 
 
-def generate_users(qtd: int) -> list[dict[str,str]]:
+def generate_users(qty: int) -> list[dict[str,str]]:
     users = []
-    for ru in RandomUser.generate_users(qtd):
+    for ru in RandomUser.generate_users(qty):
         users.append({
             "full_name": ru.get_full_name(),
             "date_of_birth": ru.get_dob(),
@@ -65,7 +65,7 @@ if __name__ == "__main__":
     ENDPOINT_URL = os.getenv("ENDPOINT_URL")
     ACCESS_KEY = os.getenv("ACCESS_KEY")
     SECRET_KEY = os.getenv("SECRET_KEY")
-    APP_USERS_QTD = int(os.getenv("APP_USERS_QTD", 10))
+    APP_USERS_QTY = int(os.getenv("APP_USERS_QTY", 10))
     APP_BUCKET_NAME = os.getenv("APP_BUCKET_NAME")
     APP_OBJ_PREFIX = Path(os.getenv("APP_OBJ_PREFIX"))
 
@@ -84,7 +84,7 @@ if __name__ == "__main__":
         client = boto3.client('s3')
 
     args = Args(
-        user_qtd = APP_USERS_QTD,
+        user_qty = APP_USERS_QTY,
         bucket_name = APP_BUCKET_NAME,
         obj_prefix = APP_OBJ_PREFIX,
     )
