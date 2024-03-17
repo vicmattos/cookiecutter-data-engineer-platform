@@ -28,8 +28,6 @@ class MainArgs:
 
 
 def main(args: MainArgs) -> str:
-    # Clean args
-    args.obj_prefix = _clean_obj_prefix(args.obj_prefix)
     # Create Constants
     FILE_NAME: str = f"{int(time.time())}_users.jsonl"
     S3_OBJ_URI: Path = Path(args.bucket_name, args.obj_prefix, FILE_NAME)
