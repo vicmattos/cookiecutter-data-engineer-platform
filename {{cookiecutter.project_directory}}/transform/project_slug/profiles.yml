@@ -1,0 +1,11 @@
+project_slug:
+  outputs:
+    local:
+      type: postgres
+      host: localhost
+      dbname: dw
+      port: 5432
+      user: dw_user
+      pass: dw_pass
+      schema: mart_analytics
+  target: local
