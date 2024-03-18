@@ -1,0 +1,4 @@
+s3fs
+python-dotenv
+psycopg[binary,pool]
+pip-tools
