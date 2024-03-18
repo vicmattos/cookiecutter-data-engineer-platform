@@ -1,3 +1,5 @@
+name: project_slug
+
 services:
 
   obj-store:
