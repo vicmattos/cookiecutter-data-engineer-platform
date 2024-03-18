@@ -2,10 +2,10 @@ project_slug:
   outputs:
     local:
       type: postgres
-      host: localhost
-      dbname: dw
-      port: 5432
-      user: dw_user
-      pass: dw_pass
+      host: "{{ env_var('DW_HOST') }}"
+      dbname: "{{ env_var('DW_DBNAME') }}"
+      port: "{{ env_var('DW_PORT') | int }}"
+      user: "{{ env_var('DW_USER') }}"
+      pass: "{{ env_var('DW_PASS') }}"
       schema: mart_analytics
   target: local
