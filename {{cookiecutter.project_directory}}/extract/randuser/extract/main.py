@@ -1,15 +1,14 @@
-from dataclasses import dataclass
 import json
 import os
-from pathlib import Path
 import time
+from dataclasses import dataclass
+from pathlib import Path
 from typing import Iterator
 from typing import TypeVar
 
 import s3fs
 from dotenv import load_dotenv
 from randomuser import RandomUser
-
 
 UserGen = TypeVar("UserGen", bound=Iterator[dict[str, str]])
 S3File = TypeVar("S3File", bound=s3fs.core.S3FileSystem)
@@ -49,12 +48,9 @@ def generate_users(qty: int) -> UserGen:
 
 
 def upload_users(s3: S3File, key: str, users: UserGen, encode: str = "utf-8") -> None:
+    ld_user_bytes = lambda u: bytes(json.dumps(u), encode)
     with s3.open(key, "wb") as f:
-        for user in users:
-            ustring = json.dumps(user)
-            ubytes = bytes(ustring, encode)
-            f.write(ubytes)
-            f.write(b"\n")
+        f.write(b"\n".join([ld_user_bytes(u) for u in users]))
 
 
 if __name__ == "__main__":
