@@ -1,5 +1,5 @@
-import os
 import json
+import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import TypeVar
@@ -37,12 +37,12 @@ class MainArgs:
 def main(args: MainArgs) -> None:
     # Read users from S3
     OBJ_FULL_KEY = Path(args.bucket_name, args.s3_obj_key)
-    with args.s3_client.open(OBJ_FULL_KEY, 'rb') as f:
+    with args.s3_client.open(OBJ_FULL_KEY, "rb") as f:
         users_str = f.read().decode(args.s3_obj_enconde)
 
     # Parse data
     # users = [json.loads(u) for u in users_str.splitlines()]
-    users_json = "[" + users_str.replace('\n', ',') + "]"
+    users_json = "[" + users_str.replace("\n", ",") + "]"
 
     # Insert into DW
     with psycopg.connect(
