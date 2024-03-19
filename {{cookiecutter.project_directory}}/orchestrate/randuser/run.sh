@@ -10,7 +10,7 @@ SCRIPT_DIR="$(pwd)"
 
 RANDUSER_EXTRACT_PATH="../../extract/randuser/extract/"
 RANDUSER_LOAD_PATH="../../extract/randuser/load/"
-TRANSFORM_PATH="../../transform/"
+TRANSFORM_DBT_PATH="../../transform/project_slug"
 
 
 ################################################################
@@ -37,7 +37,7 @@ cd $SCRIPT_DIR
 ################################################################
 ## RUN DBT MODELS
 
-cd $TRANSFORM_PATH
+cd $TRANSFORM_DBT_PATH
 python -m venv .venv
 .venv/bin/pip install -r requirements.txt
-dbt run --profiles-dir project_slug --project-dir project_slug -m tag:randuser
+.venv/bin/dbt run --profiles-dir . -m tag:randuser
