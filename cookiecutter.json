@@ -5,5 +5,8 @@
     "project_directory": "Enter directory name",
     "compose_project_name": "Enter docker compose project name"
   },
-  "_copy_without_render": ["transform/profiles.yml"]
+  "_copy_without_render": [
+    "transform/profiles.yml",
+    "*transform/models"
+  ]
 }
