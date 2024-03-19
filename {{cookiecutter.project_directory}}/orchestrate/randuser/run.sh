@@ -10,7 +10,7 @@ SCRIPT_DIR="$(pwd)"
 
 RANDUSER_EXTRACT_PATH="../../extract/randuser/extract/"
 RANDUSER_LOAD_PATH="../../extract/randuser/load/"
-TRANSFORM_DBT_PATH="../../transform/project_slug"
+TRANSFORM_DBT_PATH="../../transform/"
 
 
 ################################################################
