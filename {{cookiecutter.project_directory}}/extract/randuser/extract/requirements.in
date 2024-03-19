@@ -1,3 +1,4 @@
+# Install `pip-tools` and run `pip-compile` to generate `requirements.txt`
 python-dotenv
 randomuser
 s3fs
