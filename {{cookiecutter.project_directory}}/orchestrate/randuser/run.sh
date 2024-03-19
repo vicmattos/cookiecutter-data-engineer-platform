@@ -21,7 +21,7 @@ TRANSFORM_DBT_PATH="../../transform/project_slug"
 cd $RANDUSER_EXTRACT_PATH
 python -m venv .venv
 .venv/bin/pip install -r requirements.txt
-export APP_OBJ_URI=$(.venv/bin/python -m main)
+APP_OBJ_URI=$(.venv/bin/python -m main)
 cd $SCRIPT_DIR
 
 
@@ -30,7 +30,7 @@ cd $SCRIPT_DIR
 cd $RANDUSER_LOAD_PATH
 python -m venv .venv
 .venv/bin/pip install -r requirements.txt
-.venv/bin/python -m main
+APP_OBJ_URI=$APP_OBJ_URI .venv/bin/python -m main
 cd $SCRIPT_DIR
 
 
