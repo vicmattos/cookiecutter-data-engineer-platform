@@ -1,4 +1,4 @@
-name: compose_project_name
+name: {{ cookiecutter.compose_project_name }}
 
 services:
 
