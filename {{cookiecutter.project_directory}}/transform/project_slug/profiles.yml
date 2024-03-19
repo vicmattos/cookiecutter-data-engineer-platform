@@ -3,9 +3,9 @@ project_slug:
     local:
       type: postgres
       host: "{{ env_var('DW_HOST') }}"
-      dbname: "{{ env_var('DW_DBNAME') }}"
+      dbname: "{{ env_var('DW_DATABASE') }}"
       port: "{{ env_var('DW_PORT') | int }}"
       user: "{{ env_var('DW_USER') }}"
-      pass: "{{ env_var('DW_PASS') }}"
+      pass: "{{ env_var('DW_PASSWORD') }}"
       schema: mart_analytics
   target: local
