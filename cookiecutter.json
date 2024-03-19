@@ -1,12 +1,8 @@
 {
-  "project_name": "My Data Platform",
-  "project_directory": "{{ cookiecutter.project_name.lower().replace(' ', '-') }}",
-  "project_slug": "{{ cookiecutter.project_directory.lower().replace('-', '_') }}",
-  "python_version": ["3.11", "3.10", "3.9", "3.8"],
+  "project_directory": "my_data_platform",
+  "compose_project_name": "my-data-platform",
   "__prompts__": {
-    "project_name": "Enter project name",
     "project_directory": "Enter directory name",
-    "project_slug": "Enter project slug [bold yellow]in lower case with `_`[/]",
-    "python_version": "Choose python version"
+    "compose_project_name": "Enter docker compose project name"
   }
 }
