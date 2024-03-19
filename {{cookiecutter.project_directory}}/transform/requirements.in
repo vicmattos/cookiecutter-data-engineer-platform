@@ -1,2 +1,3 @@
+# Install `pip-tools` and run `pip-compile` to generate `requirements.txt`
 dbt-postgres
 pip-tools

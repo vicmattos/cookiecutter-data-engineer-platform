@@ -1,3 +1,4 @@
+# Install `pip-tools` and run `pip-compile` to generate `requirements.txt`
 s3fs
 python-dotenv
 psycopg[binary,pool]
