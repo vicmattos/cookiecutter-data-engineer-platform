@@ -1,4 +1,4 @@
-project_slug:
+default:
   outputs:
     local:
       type: postgres
